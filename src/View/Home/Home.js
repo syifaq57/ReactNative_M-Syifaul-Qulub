@@ -37,10 +37,19 @@ export default class LandingPage extends Component {
         },
         function() {
           console.log('idpgw', this.state.DataUser.username);
+          AsyncStorage.getItem('Auth').then(value =>
+            this.setState(
+              {
+                Auth: JSON.parse(value),
+              },
+              function() {
+                this.loadData();
+              },
+            ),
+          );
         },
       ),
     );
-    this.loadData();
   }
 
   async loadData() {
@@ -51,11 +60,11 @@ export default class LandingPage extends Component {
     fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer Uj41mLXNTVGo95EM8qe9ndv5pIbdTSG0v2jkhXey',
+        Authorization:
+          this.state.Auth.token_type + ' ' + this.state.Auth.access_token,
       },
       body: JSON.stringify({
-        token:
-          'Vs67RydbIeCp1n3qloxn57grNzE5AL9qkRM5JMZOc7BTnXFUFfjpGTvIFhlc8SnSl784ftXxqHRoUkTwUBv7nERa-jXbhibqbaAIoRVzIMXKLYTVyXVfXOA-tRRRbBQQA4',
+        token: this.state.DataUser.token,
       }),
     })
       .then(response => response.json())
@@ -186,7 +195,7 @@ export default class LandingPage extends Component {
                   backgroundColor: 'rgba(255,255,255,0.5)',
                 }}>
                 <View style={{alignItems: 'flex-start', borderBottomWidth: 1}}>
-                <Text>Prime To Pay</Text>
+                  <Text>Prime To Pay</Text>
                 </View>
               </View>
             </View>

@@ -37,6 +37,14 @@ export default class LandingPage extends Component {
     };
   }
 
+  componentDidMount() {
+    AsyncStorage.getItem('Auth').then(value =>
+      this.setState({
+        Auth: JSON.parse(value),
+      }),
+    );
+  }
+
   onLoginPress() {
     this.setState({
       visibleDialogSubmit: true,
@@ -45,7 +53,8 @@ export default class LandingPage extends Component {
     fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer Uj41mLXNTVGo95EM8qe9ndv5pIbdTSG0v2jkhXey',
+        Authorization:
+          this.state.Auth.token_type + ' ' + this.state.Auth.access_token,
       },
       body: JSON.stringify({
         email: this.state.email,

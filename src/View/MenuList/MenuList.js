@@ -45,7 +45,8 @@ export default class LandingPage extends Component {
     fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer Uj41mLXNTVGo95EM8qe9ndv5pIbdTSG0v2jkhXey',
+        Authorization:
+          this.state.Auth.token_type + ' ' + this.state.Auth.access_token,
       },
     })
       .then(response => response.json())
@@ -105,7 +106,6 @@ export default class LandingPage extends Component {
   }
 
   componentDidMount() {
-    this.LoadData();
     AsyncStorage.getItem('DataUser').then(value =>
       this.setState(
         {
@@ -113,6 +113,16 @@ export default class LandingPage extends Component {
         },
         function() {
           console.log('idpgw', this.state.DataUser.username);
+          AsyncStorage.getItem('Auth').then(value =>
+            this.setState(
+              {
+                Auth: JSON.parse(value),
+              },
+              function() {
+                this.LoadData();
+              },
+            ),
+          );
         },
       ),
     );

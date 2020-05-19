@@ -1,6 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {ImageBackground, TouchableOpacity, Image, Platform} from 'react-native';
+import {
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Platform,
+  AsyncStorage,
+} from 'react-native';
 import {View, Text, Container, Content, Button, Header} from 'native-base';
 import colors from '../../Component/colors';
 import styles from '../../Component/styles/GlobalStyle';
@@ -10,7 +16,40 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+import GlobalConfig from '../../Services/GlobalConfig';
+
 export default class LandingPage extends Component {
+  componentDidMount() {
+    this.loadKey();
+  }
+
+  loadKey() {
+    this.setState({
+      visibleDialogSubmit: true,
+    });
+    var url = GlobalConfig.SERVERHOST + 'oauth/access_token';
+    var formData = new FormData();
+    formData.append('client_secret', '0a40f69db4e5fd2f4ac65a090f31b823');
+    formData.append('client_id', 'e78869f77986684a');
+    formData.append('grant_type', 'password');
+    formData.append('username', 'support@technopartner.id');
+    formData.append('password', '1234567');
+    fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        AsyncStorage.setItem('Auth', JSON.stringify(response));
+      })
+      .catch(error => {
+        this.setState({
+          visibleDialogSubmit: false,
+        });
+      });
+  }
+
   render() {
     return (
       <Container style={{flex: 1, display: 'flex'}}>
