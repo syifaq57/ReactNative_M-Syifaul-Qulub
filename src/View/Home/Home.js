@@ -25,6 +25,8 @@ export default class LandingPage extends Component {
     this.state = {
       DataUser: [],
       data: [],
+      barcode: '',
+      balance: '',
       ispriceVisible: false,
     };
   }
@@ -70,9 +72,16 @@ export default class LandingPage extends Component {
       .then(response => response.json())
       .then(response => {
         console.log(response);
-        this.setState({
-          data: response,
-        });
+        this.setState(
+          {
+            data: response,
+            barcode: response.primaryCard.barcode,
+            balance: response.primaryCard.balance,
+          },
+          function() {
+            console.log('data all', this.state.data);
+          },
+        );
       })
       .catch(error => {
         this.setState({
@@ -191,11 +200,52 @@ export default class LandingPage extends Component {
               }}>
               <View
                 style={{
-                  paddingBottom: 50,
+                  paddingBottom: 30,
                   backgroundColor: 'rgba(255,255,255,0.5)',
                 }}>
-                <View style={{alignItems: 'flex-start', borderBottomWidth: 1}}>
-                  <Text>Prime To Pay</Text>
+                <View
+                  style={{
+                    alignItems: 'flex-start',
+                    borderBottomWidth: 1,
+                    padding: 10,
+                  }}>
+                  <Text style={{fontSize: 20}}>Prime To Pay</Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'flex-start',
+                    padding: 10,
+                  }}>
+                  <Text>Show below QR Code to the cashier</Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'flex-start',
+                    padding: 10,
+                    flexDirection: 'row',
+                  }}>
+                    <View style={{flex: 1}}>
+                      <Text style={{fontSize: 15}}>Kartu Satu</Text>
+                      <Text style={{color: colors.greenDss}}>Balance</Text>
+                      <Text style={{color: colors.greenDss}}>Beans</Text>
+                    </View>
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                      <Text>IDR {this.state.balance}</Text>
+                    </View>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    padding: 10,
+                  }}>
+                  <Image
+                    source={{uri: this.state.barcode}}
+                    style={{
+                      height: hp('40%'),
+                      width: wp('70%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
                 </View>
               </View>
             </View>
